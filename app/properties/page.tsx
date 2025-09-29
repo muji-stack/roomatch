@@ -4,6 +4,7 @@ import PropertyCard from '@/components/PropertyCard'
 import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 interface SearchParams {
   area?: string
@@ -56,9 +57,24 @@ export default async function PropertiesPage({ searchParams }: PageProps) {
 
   const { data: properties, error } = await query
 
+  console.log('=== デバッグ情報 ===')
+  console.log('取得した物件数:', properties?.length || 0)
+  console.log('エラー:', error)
+  console.log('物件データ:', properties)
+  console.log('==================')
+
   if (error) {
     console.error('Error fetching properties:', error)
-    return <div>データの取得に失敗しました</div>
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+            データの取得に失敗しました: {error.message}
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
