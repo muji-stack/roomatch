@@ -1,17 +1,19 @@
+import Link from 'next/link'
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* ヘッダー */}
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <span className="text-3xl">🏠</span>
             <h1 className="text-2xl font-bold text-indigo-600">RoomMatch</h1>
-          </a>
+          </Link>
           <nav className="flex gap-6">
-            <a href="/properties" className="text-gray-600 hover:text-indigo-600">物件を探す</a>
-            <a href="#" className="text-gray-600 hover:text-indigo-600">インテリア</a>
-            <a href="#" className="text-gray-600 hover:text-indigo-600">ログイン</a>
+            <Link href="/properties" className="text-gray-600 hover:text-indigo-600">物件を探す</Link>
+            <Link href="/interiors" className="text-gray-600 hover:text-indigo-600">インテリア</Link>
+            <Link href="#" className="text-gray-600 hover:text-indigo-600">ログイン</Link>
           </nav>
         </div>
       </header>
@@ -75,11 +77,11 @@ export default function Home() {
 
             {/* 検索ボタン */}
             <div className="flex items-end">
-              <a href="/properties" className="w-full">
+              <Link href="/properties" className="w-full">
                 <button className="w-full bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition font-semibold">
                   🔍 検索
                 </button>
-              </a>
+              </Link>
             </div>
           </div>
         </div>

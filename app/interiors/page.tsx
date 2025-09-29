@@ -1,9 +1,10 @@
 import { supabase } from '@/lib/supabase'
+import Link from 'next/link'
+import Image from 'next/image'
 
 export const dynamic = 'force-dynamic'
 
 export default async function InteriorsPage() {
-  // Supabaseからインテリアデータを取得
   const { data: interiors, error } = await supabase
     .from('interiors')
     .select('*')
@@ -14,34 +15,30 @@ export default async function InteriorsPage() {
     return <div>データの取得に失敗しました</div>
   }
 
-  // 間取りタイプでグループ化
   const layouts = ['1K', '1DK', '1LDK', '2K', '2DK', '2LDK']
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* ヘッダー */}
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <span className="text-3xl">🏠</span>
             <h1 className="text-2xl font-bold text-indigo-600">RoomMatch</h1>
-          </a>
+          </Link>
           <nav className="flex gap-6">
-            <a href="/properties" className="text-gray-600 hover:text-indigo-600">物件を探す</a>
-            <a href="/interiors" className="text-indigo-600 font-semibold">インテリア</a>
-            <a href="#" className="text-gray-600 hover:text-indigo-600">ログイン</a>
+            <Link href="/properties" className="text-gray-600 hover:text-indigo-600">物件を探す</Link>
+            <Link href="/interiors" className="text-indigo-600 font-semibold">インテリア</Link>
+            <Link href="#" className="text-gray-600 hover:text-indigo-600">ログイン</Link>
           </nav>
         </div>
       </header>
 
-      {/* メインコンテンツ */}
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-gray-800 mb-2">🛋️ インテリア実例</h2>
           <p className="text-gray-600">間取り別のインテリア実例を参考にしてください</p>
         </div>
 
-        {/* 間取りタブ */}
         <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
           <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold whitespace-nowrap">
             すべて
@@ -53,23 +50,21 @@ export default async function InteriorsPage() {
           ))}
         </div>
 
-        {/* インテリアグリッド */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {interiors?.map((interior) => (
             <div key={interior.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition cursor-pointer">
-              {/* インテリア画像 */}
               <div className="relative h-64 bg-gray-200">
-                <img 
+                <Image 
                   src={interior.image} 
                   alt={interior.title}
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
                 />
                 <div className="absolute top-3 left-3 bg-indigo-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
                   {interior.layout}
                 </div>
               </div>
 
-              {/* インテリア情報 */}
               <div className="p-5">
                 <h3 className="text-xl font-bold text-gray-800 mb-2">
                   {interior.title}
@@ -105,7 +100,6 @@ export default async function InteriorsPage() {
           ))}
         </div>
 
-        {/* データがない場合 */}
         {(!interiors || interiors.length === 0) && (
           <div className="text-center py-12">
             <p className="text-gray-500 text-lg">まだインテリア実例が登録されていません</p>

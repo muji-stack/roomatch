@@ -1,9 +1,10 @@
 import { supabase } from '@/lib/supabase'
+import Link from 'next/link'
+import Image from 'next/image'
 
 export const dynamic = 'force-dynamic'
 
 export default async function PropertyDetailPage({ params }: { params: { id: string } }) {
-  // Supabaseから特定の物件データを取得
   const { data: property, error } = await supabase
     .from('properties')
     .select('*')
@@ -14,7 +15,6 @@ export default async function PropertyDetailPage({ params }: { params: { id: str
     return <div>物件が見つかりませんでした</div>
   }
 
-  // この物件の間取りに合うインテリアを取得
   const { data: interiors } = await supabase
     .from('interiors')
     .select('*')
@@ -23,45 +23,42 @@ export default async function PropertyDetailPage({ params }: { params: { id: str
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* ヘッダー */}
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <span className="text-3xl">🏠</span>
             <h1 className="text-2xl font-bold text-indigo-600">RoomMatch</h1>
-          </a>
+          </Link>
           <nav className="flex gap-6">
-            <a href="/properties" className="text-indigo-600 font-semibold">物件を探す</a>
-            <a href="/interiors" className="text-gray-600 hover:text-indigo-600">インテリア</a>
-            <a href="#" className="text-gray-600 hover:text-indigo-600">ログイン</a>
+            <Link href="/properties" className="text-indigo-600 font-semibold">物件を探す</Link>
+            <Link href="/interiors" className="text-gray-600 hover:text-indigo-600">インテリア</Link>
+            <Link href="#" className="text-gray-600 hover:text-indigo-600">ログイン</Link>
           </nav>
         </div>
       </header>
 
-      {/* メインコンテンツ */}
       <main className="max-w-7xl mx-auto px-4 py-8">
-        {/* パンくずリスト */}
         <div className="mb-6 text-sm text-gray-600">
-          <a href="/" className="hover:text-indigo-600">ホーム</a>
+          <Link href="/" className="hover:text-indigo-600">ホーム</Link>
           <span className="mx-2">/</span>
-          <a href="/properties" className="hover:text-indigo-600">物件一覧</a>
+          <Link href="/properties" className="hover:text-indigo-600">物件一覧</Link>
           <span className="mx-2">/</span>
           <span className="text-gray-800">{property.name}</span>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* 左側: 物件情報 */}
           <div className="lg:col-span-2">
-            {/* メイン画像 */}
             <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-6">
-              <img 
-                src={property.image} 
-                alt={property.name}
-                className="w-full h-96 object-cover"
-              />
+              <div className="relative h-96">
+                <Image 
+                  src={property.image} 
+                  alt={property.name}
+                  fill
+                  className="object-cover"
+                />
+              </div>
             </div>
 
-            {/* 物件詳細 */}
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h2 className="text-3xl font-bold text-gray-800 mb-4">{property.name}</h2>
               
@@ -96,18 +93,14 @@ export default async function PropertyDetailPage({ params }: { params: { id: str
               </div>
             </div>
 
-            {/* インテリア実例セクション */}
             <div className="bg-white rounded-xl shadow-lg p-6 mt-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-2xl font-bold text-gray-800">
                   🛋️ この間取りのインテリア実例
                 </h3>
-                <a 
-                  href="/interiors" 
-                  className="text-indigo-600 hover:text-indigo-700 font-semibold text-sm"
-                >
+                <Link href="/interiors" className="text-indigo-600 hover:text-indigo-700 font-semibold text-sm">
                   もっと見る →
-                </a>
+                </Link>
               </div>
               <p className="text-gray-600 mb-6">
                 同じ{property.layout}の間取りで実際に住んでいる方のインテリア実例です
@@ -118,10 +111,11 @@ export default async function PropertyDetailPage({ params }: { params: { id: str
                   {interiors.map((interior) => (
                     <div key={interior.id} className="bg-white border-2 border-gray-200 rounded-lg overflow-hidden hover:border-indigo-300 transition">
                       <div className="relative h-48">
-                        <img 
+                        <Image 
                           src={interior.image} 
                           alt={interior.title}
-                          className="w-full h-full object-cover"
+                          fill
+                          className="object-cover"
                         />
                       </div>
                       <div className="p-4">
@@ -146,18 +140,14 @@ export default async function PropertyDetailPage({ params }: { params: { id: str
                   <p className="text-gray-500 mb-4">
                     この間取り({property.layout})のインテリア実例はまだ登録されていません
                   </p>
-                  <a 
-                    href="/interiors" 
-                    className="inline-block bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition font-semibold"
-                  >
+                  <Link href="/interiors" className="inline-block bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition font-semibold">
                     他の間取りのインテリアを見る
-                  </a>
+                  </Link>
                 </div>
               )}
             </div>
           </div>
 
-          {/* 右側: 問い合わせボックス */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-lg p-6 sticky top-4">
               <div className="mb-6">

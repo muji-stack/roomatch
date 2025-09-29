@@ -1,9 +1,10 @@
 import { supabase } from '@/lib/supabase'
+import Link from 'next/link'
+import Image from 'next/image'
 
 export const dynamic = 'force-dynamic'
 
 export default async function PropertiesPage() {
-  // Supabaseから物件データを取得
   const { data: properties, error } = await supabase
     .from('properties')
     .select('*')
@@ -16,46 +17,42 @@ export default async function PropertiesPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* ヘッダー */}
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <span className="text-3xl">🏠</span>
             <h1 className="text-2xl font-bold text-indigo-600">RoomMatch</h1>
-          </a>
+          </Link>
           <nav className="flex gap-6">
-            <a href="/properties" className="text-indigo-600 font-semibold">物件を探す</a>
-            <a href="#" className="text-gray-600 hover:text-indigo-600">インテリア</a>
-            <a href="#" className="text-gray-600 hover:text-indigo-600">ログイン</a>
+            <Link href="/properties" className="text-indigo-600 font-semibold">物件を探す</Link>
+            <Link href="/interiors" className="text-gray-600 hover:text-indigo-600">インテリア</Link>
+            <Link href="#" className="text-gray-600 hover:text-indigo-600">ログイン</Link>
           </nav>
         </div>
       </header>
 
-      {/* メインコンテンツ */}
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-6">
           <h2 className="text-3xl font-bold text-gray-800 mb-2">物件一覧</h2>
           <p className="text-gray-600">{properties?.length || 0}件の物件が見つかりました</p>
         </div>
 
-        {/* 物件グリッド */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {properties?.map((property) => (
-            <a href={`/properties/${property.id}`} key={property.id}>
+            <Link href={`/properties/${property.id}`} key={property.id}>
               <div className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition cursor-pointer">
-                {/* 物件画像 */}
                 <div className="relative h-48 bg-gray-200">
-                  <img 
+                  <Image 
                     src={property.image} 
                     alt={property.name}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
                   />
                   <div className="absolute top-3 right-3 bg-indigo-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
                     {property.layout}
                   </div>
                 </div>
 
-                {/* 物件情報 */}
                 <div className="p-5">
                   <h3 className="text-xl font-bold text-gray-800 mb-2">
                     {property.name}
@@ -76,7 +73,7 @@ export default async function PropertiesPage() {
                   </div>
                 </div>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
       </main>
