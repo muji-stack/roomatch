@@ -14,6 +14,13 @@ export default async function PropertyDetailPage({ params }: { params: { id: str
     return <div>物件が見つかりませんでした</div>
   }
 
+  // この物件の間取りに合うインテリアを取得
+  const { data: interiors } = await supabase
+    .from('interiors')
+    .select('*')
+    .eq('layout', property.layout)
+    .limit(4)
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* ヘッダー */}
@@ -25,7 +32,7 @@ export default async function PropertyDetailPage({ params }: { params: { id: str
           </a>
           <nav className="flex gap-6">
             <a href="/properties" className="text-indigo-600 font-semibold">物件を探す</a>
-            <a href="#" className="text-gray-600 hover:text-indigo-600">インテリア</a>
+            <a href="/interiors" className="text-gray-600 hover:text-indigo-600">インテリア</a>
             <a href="#" className="text-gray-600 hover:text-indigo-600">ログイン</a>
           </nav>
         </div>
@@ -91,25 +98,62 @@ export default async function PropertyDetailPage({ params }: { params: { id: str
 
             {/* インテリア実例セクション */}
             <div className="bg-white rounded-xl shadow-lg p-6 mt-6">
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">
-                🛋️ この間取りのインテリア実例
-              </h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-2xl font-bold text-gray-800">
+                  🛋️ この間取りのインテリア実例
+                </h3>
+                <a 
+                  href="/interiors" 
+                  className="text-indigo-600 hover:text-indigo-700 font-semibold text-sm"
+                >
+                  もっと見る →
+                </a>
+              </div>
               <p className="text-gray-600 mb-6">
                 同じ{property.layout}の間取りで実際に住んでいる方のインテリア実例です
               </p>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-gray-50 rounded-lg p-4 border-2 border-dashed border-gray-300 flex items-center justify-center h-48">
-                  <p className="text-gray-500">インテリア実例 1</p>
+              {interiors && interiors.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {interiors.map((interior) => (
+                    <div key={interior.id} className="bg-white border-2 border-gray-200 rounded-lg overflow-hidden hover:border-indigo-300 transition">
+                      <div className="relative h-48">
+                        <img 
+                          src={interior.image} 
+                          alt={interior.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="p-4">
+                        <h4 className="font-bold text-gray-800 mb-2">{interior.title}</h4>
+                        <p className="text-sm text-gray-600 mb-3">{interior.description}</p>
+                        {interior.rakuten_url && (
+                          <a 
+                            href={interior.rakuten_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block w-full bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition text-sm font-semibold text-center"
+                          >
+                            🛒 楽天で家具を見る
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div className="bg-gray-50 rounded-lg p-4 border-2 border-dashed border-gray-300 flex items-center justify-center h-48">
-                  <p className="text-gray-500">インテリア実例 2</p>
+              ) : (
+                <div className="bg-gray-50 rounded-lg p-8 text-center border-2 border-dashed border-gray-300">
+                  <p className="text-gray-500 mb-4">
+                    この間取り({property.layout})のインテリア実例はまだ登録されていません
+                  </p>
+                  <a 
+                    href="/interiors" 
+                    className="inline-block bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition font-semibold"
+                  >
+                    他の間取りのインテリアを見る
+                  </a>
                 </div>
-              </div>
-              
-              <p className="text-sm text-gray-500 mt-4">
-                ※ インテリア機能は次のステップで実装します
-              </p>
+              )}
             </div>
           </div>
 
@@ -145,7 +189,7 @@ export default async function PropertyDetailPage({ params }: { params: { id: str
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-green-500">✓</span>
-                    <span>インテリア実例あり</span>
+                    <span>インテリア実例あり ({interiors?.length || 0}件)</span>
                   </li>
                 </ul>
               </div>
